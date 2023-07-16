@@ -1,0 +1,23 @@
+---
+version: '3.1'
+services:
+
+  db:
+    image: lscr.io/linuxserver/mariadb:latest
+    container_name: url-shortener-db
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Budapest
+    env_file:
+      - .env
+    volumes:
+      - db:/config
+      - ./db_init/init.sql:/config/initdb.d/init.sql
+    ports:
+      - 3306:3306
+    restart: unless-stopped
+
+
+volumes:
+  db:
