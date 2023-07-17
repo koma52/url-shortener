@@ -21,7 +21,7 @@ func (a *App) Initialize() {
 
 	// Wait for db to start
 	time.Sleep(5 * time.Second)
-	connectionString := os.Getenv("MYSQL_USER") + ":" + os.Getenv("MYSQL_PASSWORD") + "@tcp(db:3306)/" + os.Getenv("MYSQL_DATABASE")
+	connectionString := os.Getenv("MYSQL_USER") + ":" + os.Getenv("MYSQL_PASSWORD") + "@tcp(" + os.Getenv("DB_URL") + ":" + os.Getenv("DB_PORT") + ")/" + os.Getenv("MYSQL_DATABASE")
 	a.DB, _ = sql.Open("mysql", connectionString)
 
 	a.Router.HandleFunc("/", HomeHandler).Methods("GET")
@@ -36,5 +36,5 @@ func (a *App) Initialize() {
 }
 
 func (a *App) Run() {
-	log.Fatal(http.ListenAndServe(":52520", a.Router))
+	log.Fatal(http.ListenAndServe(":"+os.Getenv("APP_PORT"), a.Router))
 }
