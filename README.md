@@ -50,17 +50,17 @@ Redirect short URL to original URL
 **URL** : `/{shortcode}`
 
 **Method** : `GET`
+#### Success Response
+
+**Condition** : If everything is OK redirecting.
+
+**Code** : `303 See Other`
 ### Info about a shortened URL
 Getting information about a shortened URL
 
 **URL** : `/info/{shortcode}`
 
 **Method** : `GET`
-#### Success Response
-
-**Condition** : If everything is OK redirecting.
-
-**Code** : `303 See Other`
 #### Success Response
 
 **Condition** : If everything is OK sending back information about short URL.
