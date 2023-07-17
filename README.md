@@ -85,20 +85,10 @@ Change the active state of the short URL.
 **Method** : `PUT`
 #### Success Response
 
-**Condition** : If everything is OK sending back information about short URL.
+**Condition** : If everything is OK toggling short URL active state.
 
 **Code** : `200 OK`
 
-**Content example**
-
-```json
-{
-    "shortcode": 2,
-    "url": "https://example.com",
-    "active": true,
-    "created": "2023-07-17 12:48:28"
-}
-```
 ### Permanently delete short URL
 Delete short URL from database.
 
