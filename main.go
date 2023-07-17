@@ -1,14 +1,13 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
+	"github.com/koma52/url-shortener/backend"
 )
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, you've requested: %s\n", r.URL.Path)
-	})
+	a := backend.App{}
+	a.Initialize()
 
-	http.ListenAndServe(":52520", nil)
+	a.Run()
+
 }

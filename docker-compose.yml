@@ -4,12 +4,15 @@ services:
 
   shortener:
     image: urlshortener/urlshortener
+    container_name: url-shortener-backend
     build: .
     env_file:
       - .env
     ports:
       - 52520:52520
-    restart: unless-stopped
+    depends_on:
+      - db
+    restart: no
 
   db:
     image: lscr.io/linuxserver/mariadb:latest
@@ -25,7 +28,7 @@ services:
       - ./db_init/init.sql:/config/initdb.d/init.sql
     ports:
       - 3306:3306
-    restart: unless-stopped
+    restart: no
 
 
 volumes:
