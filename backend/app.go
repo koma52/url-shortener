@@ -33,13 +33,13 @@ func (a *App) Initialize() {
 
 	a.Router.HandleFunc("/", HomeHandler).Methods("GET")
 	a.Router.HandleFunc("/{shortcode}", a.RedirectHandler).Methods("GET")
-	a.Router.HandleFunc("/info/{shortcode}", a.InfoHandler).Methods("GET")
+	a.Router.HandleFunc("/api/info/{shortcode}", a.InfoHandler).Methods("GET")
 
-	a.Router.HandleFunc("/shorten", a.ShortenHandler).Methods("POST")
+	a.Router.HandleFunc("/api/shorten", a.ShortenHandler).Methods("POST")
 
-	a.Router.HandleFunc("/{shortcode}", a.ToggleHandler).Methods("PUT")
+	a.Router.HandleFunc("/api/toggle/{shortcode}", a.ToggleHandler).Methods("PUT")
 
-	a.Router.HandleFunc("/{shortcode}", a.DeleteHandler).Methods("DELETE")
+	a.Router.HandleFunc("/api/delete/{shortcode}", a.DeleteHandler).Methods("DELETE")
 }
 
 func (a *App) Run() {
