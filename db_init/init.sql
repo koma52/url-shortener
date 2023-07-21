@@ -6,8 +6,7 @@ CREATE TABLE `shortenedurls` (
 	  `longurl` varchar(255) NOT NULL,
 	  `active` bool,
 	  `created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	  
+
 	  PRIMARY KEY  (`id`),
-	  UNIQUE KEY `long` (`longurl`)
-	  UNIQUE KEY `short` (`shortcode`)
+	  UNIQUE KEY `url` (`longurl`, `shortcode`)
 );
