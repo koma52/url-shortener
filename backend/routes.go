@@ -151,8 +151,8 @@ func (a *App) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	shortcode := vars["shortcode"]
 
-	dbDelete := "DELETE FROM shortenedurls WHERE shortcode=" + shortcode
-	dbSelect := "SELECT shortcode FROM shortenedurls WHERE shortcode=" + shortcode
+	dbDelete := "DELETE FROM shortenedurls WHERE shortcode='" + shortcode + "';"
+	dbSelect := "SELECT shortcode FROM shortenedurls WHERE shortcode='" + shortcode + "';"
 
 	// Check if shortened url exists
 	err := a.DB.QueryRow(dbSelect).Scan(&shortcode)
