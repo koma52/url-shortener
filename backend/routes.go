@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/mux"
 )
@@ -86,6 +87,7 @@ func (a *App) InfoHandler(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) ShortenHandler(w http.ResponseWriter, r *http.Request) {
 	var u UrlBody
+	// var e *sql.Error
 
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&u); err != nil {
@@ -99,7 +101,10 @@ func (a *App) ShortenHandler(w http.ResponseWriter, r *http.Request) {
 	dbInsert := "INSERT INTO shortenedurls (shortcode, longurl, active) VALUES ('" + shortcode + "', '" + u.Url + "', 1);"
 
 	_, err := a.DB.Exec(dbInsert)
-	if err != nil {
+	if strings.Contains(err.Error(), "Duplicate entry") {
+		a.DB.QueryRow("SELECT shortcode FROM shortenedurls WHERE longurl = '" + u.Url + "';").Scan(shortcode)
+	}
+	if err != nil && !strings.Contains(err.Error(), "Duplicate entry") {
 		var e MessageBody
 		e.Message = "Something went wrong while shortening"
 		respond(e, http.StatusInternalServerError, w)
