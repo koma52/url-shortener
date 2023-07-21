@@ -17,7 +17,7 @@ type MessageBody struct {
 }
 
 type InfoBody struct {
-	ShortCode int64  `json:"shortcode"`
+	ShortCode string `json:"shortcode"`
 	LongUrl   string `json:"url"`
 	Active    bool   `json:"active"`
 	Created   string `json:"created"`
@@ -58,17 +58,18 @@ func (a *App) InfoHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	shortcode := vars["shortcode"]
 
-	var shortCode int64
+	var shortCode string
 	var longUrl string
 	var active bool
 	var created string
 
 	var i InfoBody
 
-	dbSelect := "SELECT * FROM shortenedurls WHERE shortcode=" + shortcode
+	dbSelect := "SELECT shortcode, longurl, active, created FROM shortenedurls WHERE shortcode='" + shortcode + "';"
 
 	err := a.DB.QueryRow(dbSelect).Scan(&shortCode, &longUrl, &active, &created)
 	if err != nil {
+		fmt.Println(err)
 		var e MessageBody
 		e.Message = "Could not find shortcode"
 		respond(e, http.StatusNotFound, w)
