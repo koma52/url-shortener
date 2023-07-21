@@ -18,7 +18,7 @@ docker-compose up -d --build
 ### Shorten URL
 Shorten a URL
 
-**URL** : `/shorten`
+**URL** : `/api/shorten`
 
 **Method** : `POST`
 
@@ -58,7 +58,7 @@ Redirect short URL to original URL
 ### Info about a shortened URL
 Getting information about a shortened URL
 
-**URL** : `/info/{shortcode}`
+**URL** : `/api/info/{shortcode}`
 
 **Method** : `GET`
 #### Success Response
@@ -77,10 +77,41 @@ Getting information about a shortened URL
     "created": "2023-07-17 12:48:28"
 }
 ```
+
+### List all URLs
+Getting information about a shortened URL
+
+**URL** : `/api/list`
+
+**Method** : `GET`
+#### Success Response
+
+**Condition** : If everything is OK sending back all URLs with information.
+
+**Code** : `200 OK`
+
+**Content example**
+
+```json
+{
+    {
+        "shortcode": "aaaaaa",
+        "url": "https://example.com",
+        "active": true,
+        "created": "2023-07-17 12:48:28"
+    },
+    {
+        "shortcode": "bbbbbb",
+        "url": "https://example.org",
+        "active": true,
+        "created": "2023-07-17 12:48:28"
+    }
+}
+```
 ### Turning short URL on and off
 Change the active state of the short URL.
 
-**URL** : `/{shortcode}`
+**URL** : `/api/toggle/{shortcode}`
 
 **Method** : `PUT`
 #### Success Response
@@ -92,7 +123,7 @@ Change the active state of the short URL.
 ### Permanently delete short URL
 Delete short URL from database.
 
-**URL** : `/{shortcode}`
+**URL** : `/api/delete/{shortcode}`
 
 **Method** : `DELETE`
 #### Success Response
