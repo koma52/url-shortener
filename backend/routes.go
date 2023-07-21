@@ -176,6 +176,36 @@ func (a *App) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	respond(e, http.StatusOK, w)
 }
 
+func (a *App) ListHandler(w http.ResponseWriter, r *http.Request) {
+	dbSelect := "SELECT shortcode, longurl, active, created FROM shortenedurls;"
+
+	var l []InfoBody
+
+	rows, err := a.DB.Query(dbSelect)
+	if err != nil {
+		var e MessageBody
+		e.Message = "Something went wrong while querying db"
+		respond(e, http.StatusInternalServerError, w)
+		return
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var i InfoBody
+		if err := rows.Scan(&i.ShortCode, &i.LongUrl, &i.Active, &i.Created); err != nil {
+			fmt.Println(err)
+			return
+		}
+		l = append(l, i)
+	}
+	if err = rows.Err(); err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	respond(l, http.StatusOK, w)
+}
+
 func respond(body interface{}, resCode int, w http.ResponseWriter) {
 	response, _ := json.Marshal(body)
 

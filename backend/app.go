@@ -34,6 +34,7 @@ func (a *App) Initialize() {
 	a.Router.HandleFunc("/", HomeHandler).Methods("GET")
 	a.Router.HandleFunc("/{shortcode}", a.RedirectHandler).Methods("GET")
 	a.Router.HandleFunc("/api/info/{shortcode}", a.InfoHandler).Methods("GET")
+	a.Router.HandleFunc("/api/list", a.ListHandler).Methods("GET")
 
 	a.Router.HandleFunc("/api/shorten", a.ShortenHandler).Methods("POST")
 
