@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/gorilla/mux"
 )
@@ -36,7 +35,7 @@ func (a *App) RedirectHandler(w http.ResponseWriter, r *http.Request) {
 	var longUrl string
 	var active bool
 
-	dbSelect := "SELECT longurl,active FROM shortenedurls WHERE shortcode=" + shortcode
+	dbSelect := "SELECT longurl,active FROM shortenedurls WHERE shortcode='" + shortcode + "';"
 
 	err := a.DB.QueryRow(dbSelect).Scan(&longUrl, &active)
 	if err != nil {
@@ -94,9 +93,11 @@ func (a *App) ShortenHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	dbInsert := "INSERT INTO shortenedurls (longurl, active) VALUES ('" + u.Url + "', 1)"
+	shortcode := makeShortcode(u.Url)[:6]
 
-	res, err := a.DB.Exec(dbInsert)
+	dbInsert := "INSERT INTO shortenedurls (shortcode, longurl, active) VALUES ('" + shortcode + "', '" + u.Url + "', 1);"
+
+	_, err := a.DB.Exec(dbInsert)
 	if err != nil {
 		var e MessageBody
 		e.Message = "Something went wrong while shortening"
@@ -104,15 +105,7 @@ func (a *App) ShortenHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := res.LastInsertId()
-	if err != nil {
-		var e MessageBody
-		e.Message = "Something went wrong while reading db"
-		respond(e, http.StatusInternalServerError, w)
-		return
-	}
-
-	u.Url = r.Host + "/" + strconv.FormatInt(id, 10)
+	u.Url = r.Host + "/" + shortcode
 
 	respond(u, http.StatusOK, w)
 }
@@ -125,7 +118,7 @@ func (a *App) ToggleHandler(w http.ResponseWriter, r *http.Request) {
 	var dbUpdate string
 	var e MessageBody
 
-	dbSelect := "SELECT active FROM shortenedurls WHERE shortcode=" + shortcode
+	dbSelect := "SELECT active FROM shortenedurls WHERE shortcode='" + shortcode + "';"
 	err := a.DB.QueryRow(dbSelect).Scan(&active)
 	if err != nil {
 		var e MessageBody
@@ -135,10 +128,10 @@ func (a *App) ToggleHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if active {
-		dbUpdate = "UPDATE shortenedurls SET active=0 WHERE shortcode=" + shortcode
+		dbUpdate = "UPDATE shortenedurls SET active=0 WHERE shortcode='" + shortcode + "';"
 		e.Message = "Toggled inactive"
 	} else {
-		dbUpdate = "UPDATE shortenedurls SET active=1 WHERE shortcode=" + shortcode
+		dbUpdate = "UPDATE shortenedurls SET active=1 WHERE shortcode='" + shortcode + "';"
 		e.Message = "Toggled active"
 	}
 
