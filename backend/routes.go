@@ -3,6 +3,7 @@ package backend
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -115,6 +116,7 @@ func (a *App) ShortenHandler(w http.ResponseWriter, r *http.Request) {
 		var e MessageBody
 		e.Message = "Something went wrong while shortening"
 		respond(e, http.StatusInternalServerError, w)
+		log.Printf("An error occured: %v", err)
 		return
 	}
 
@@ -153,6 +155,7 @@ func (a *App) ToggleHandler(w http.ResponseWriter, r *http.Request) {
 		var e MessageBody
 		e.Message = "Something went wrong while updating db"
 		respond(e, http.StatusInternalServerError, w)
+		log.Printf("An error occured: %v", err)
 		return
 	}
 
@@ -180,6 +183,7 @@ func (a *App) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 		var e MessageBody
 		e.Message = "Something went wrong while deleting"
 		respond(e, http.StatusInternalServerError, w)
+		log.Printf("An error occured: %v", err)
 		return
 	}
 
@@ -198,6 +202,7 @@ func (a *App) ListHandler(w http.ResponseWriter, r *http.Request) {
 		var e MessageBody
 		e.Message = "Something went wrong while querying db"
 		respond(e, http.StatusInternalServerError, w)
+		log.Printf("An error occured: %v", err)
 		return
 	}
 	defer rows.Close()
