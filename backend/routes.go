@@ -87,7 +87,7 @@ func (a *App) InfoHandler(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) ShortenHandler(w http.ResponseWriter, r *http.Request) {
 	var u UrlBody
-	// var e *sql.Error
+	var err error
 
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&u); err != nil {
@@ -96,11 +96,18 @@ func (a *App) ShortenHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
+	if !isURL(u.Url) {
+		var e MessageBody
+		e.Message = "Invalid URL"
+		respond(e, http.StatusBadRequest, w)
+		return
+	}
+
 	shortcode := makeShortcode(u.Url)[:6]
 
 	dbInsert := "INSERT INTO shortenedurls (shortcode, longurl, active) VALUES ('" + shortcode + "', '" + u.Url + "', 1);"
 
-	_, err := a.DB.Exec(dbInsert)
+	_, err = a.DB.Exec(dbInsert)
 	if strings.Contains(err.Error(), "Duplicate entry") {
 		a.DB.QueryRow("SELECT shortcode FROM shortenedurls WHERE longurl = '" + u.Url + "';").Scan(shortcode)
 	}
